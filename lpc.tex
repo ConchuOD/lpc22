@@ -1,0 +1,112 @@
+\documentclass{beamer}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{soul}
+\mode<presentation>
+{
+	\usecolortheme{fly}
+	\setbeamercovered{transparent}
+}
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+\title{What to do with Kconfig.socs}
+\author{Conor Dooley\newline conor.dooley@microchip.com}
+\subtitle{}
+\date{LPC 2022}
+\logo{	\includegraphics[height=0.5cm]{microchip.png}}
+
+\begin{document}
+%Hey, I'm Conor... This is gonna be a bit of a chat about something a little more mudane than maybe some of the other topics today...
+
+%came about when i tried to enable stuff for polarfire soc
+%palmer declined the changes, but became clear there was no real "policy"
+%for kconfig.socs
+
+% came to a bit of a head recently, with Renesas & D1 stuff
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}{Background}
+	\textbf{Kconfig.socs today:}
+	\begin{itemize}
+		\item[--]
+		5 entries, 4 SoCs and QEMU Virt
+		\item[--]
+		Canaan is a special case
+		\item[--]
+		symbols named SOC\_FOO
+		\item[--]
+		SIFIVE \& STARFIVE but also MICROCHIP\_POLARFIRE 
+	\end{itemize}
+	\pause
+	\textbf{Original goals:}
+	\begin{itemize}
+		\item[--]
+		"An easy place for users to say 'I want all the support for SOC X'"\cite{libera}
+		\item[--]
+		None of the symbols currently do this \& how newcomers expect it to work
+		\item[--]
+		Large degree of churn for new selects \& bloat with per SoC symbol
+		\item[--]
+		Selects can override desired "m", RTC\_DRV\_GOLDFISH \cite{goldfish}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The symbols}
+	\textbf{Existing SoCs:}
+	\begin{itemize}
+		\item[--]
+		MPFS: selects clk/plic directly, exposes other symbols
+		\item[--]
+		STARFIVE: enables stuff via default \& selects their subsystems
+		\item[--]
+		SIFIVE: selects drivers iff subsystem, exposes other symbols
+		\item[--]
+		CANAAN: mix of "select iff subsystem" \& defaults
+		\item[--]
+		VIRT: mix of "select iff subsystem" \& explicit selects
+	\end{itemize}
+	\pause
+	\textbf{Incoming SoCs (Renesas \& Allwinner)}
+	\begin{itemize}
+		\item[--]
+		"Incumbents" have no ARM legacy
+		\item[--]
+		Renesas \& Samuel want to redefine their ARCH\_FOO symbol
+		\item[--]
+		ARCH\_FOO already littered all over the kernel
+		\item[--]
+		Why have SOC\_FOO \& ARCH\_FOO?
+		\item[--]
+		per Geert: Renesas use kconfig in drivers/soc to control selects
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Options}
+	\textbf{My preference:}
+	\begin{itemize}
+		\item[--]
+		Switch from SOC\_ to ARCH\_ symbols
+		\item[--]
+		Use default ARCH\_FOO, not selects for periph drivers
+		\item[--]
+		Selects only for core things like the plic?
+		\item[--]
+		Beyond core, selects only fore essential subsystems?
+		\item[--]
+		Only add globally useful things to arch defconfig?
+	\end{itemize}
+	\pause
+	\st{\textbf{Remain as we are:}}\newline
+	\pause
+	\textbf{Over to you:}
+\end{frame}
+
+\begin{thebibliography}{}
+	\bibitem{goldfish}
+	https://lore.kernel.org/linux-riscv/mhng-99340121-50f8-49ca-ae6e-0f737fc4d736@palmerdabbelt-glaptop/ 
+	\bibitem{libera}
+	https://libera.irclog.whitequark.org/riscv/2022-05-04/ 
+\end{thebibliography}{}
+\end{document}
