@@ -1,0 +1,56 @@
+\documentclass{beamer}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{soul}
+\mode<presentation>
+{
+	\usecolortheme{fly}
+	\setbeamercovered{transparent}
+}
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+\title{BoF SBI extension stuff}
+\author{}
+\subtitle{}
+\date{LPC 2022}
+
+\begin{document}
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}{}
+	Andes/Renesas:
+	\begin{itemize}
+		\item[--]
+		They don't have DMA coherent peripherals
+		\item[--]
+		They used some SBI extensions to configure non-coherency
+		\item[--]
+		Sent RFC patchset that almost certainly needs to become alternatives if acceptable
+		\item[--]
+		Touches a bunch of arch code as is, some could (and should) be moved to drivers/soc
+		\item[--]
+		https://lore.kernel.org/linux-riscv/20220906102154.32526-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+	\end{itemize}
+\end{frame}
+\begin{frame}{}
+	Microchip:
+	\begin{itemize}
+		\item[--]
+		Use an extention for our AMP inter-hart communication as an isolation mechanism
+		\item[--]
+		Allows e51 to handle all writes to the IP
+		\item[--]
+		"No" arch code impact - just in a mailbox and a remoteproc driver (like qcom)
+		\item[--]
+		https://github.com/linux4microchip/linux/blob/linux-5.15-mchp/drivers/mailbox/mailbox-miv-ihc.c
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{}
+Arch policy doc:
+https://www.kernel.org/doc/html/latest/riscv/patch-acceptance.html
+"To avoid the maintenance complexity and potential performance impact of adding kernel code for implementor-specific RISC-V extensions, we’ll only to accept patches for extensions that have been officially frozen or ratified by the RISC-V Foundation."
+\end{frame}
+\end{document}
